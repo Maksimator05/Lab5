@@ -27,7 +27,7 @@ def test_get_existed_user():
 def test_get_unexisted_user():
      '''Получение несуществующего пользователя'''
     # Пытаемся получить пользователя с несуществующим email
-    response = client.get(BASE_URL, params={"email": "nonexistent@example.com"})
+    response = client.get(BASE_URL, params={"email": "nonexistent@example.com"}
     # Проверяем что получили 404 ошибку
     assert response.status_code == status.HTTP_404_NOT_FOUND
     # Проверяем текст ошибки
