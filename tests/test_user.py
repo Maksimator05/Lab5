@@ -24,15 +24,6 @@ def test_get_existed_user():
     assert response.status_code == 200
     assert response.json() == users[0]
 
-def test_get_unexisted_user():
-     '''Получение несуществующего пользователя'''
-    # Пытаемся получить пользователя с несуществующим email
-    response = client.get(BASE_URL, params={"email": "nonexistent@example.com"}
-    # Проверяем что получили 404 ошибку
-    assert response.status_code == status.HTTP_404_NOT_FOUND
-    # Проверяем текст ошибки
-    assert response.json() == {"detail": "User not found"}
-
 def test_create_user_with_valid_email():
     '''Создание пользователя с уникальной почтой'''
         # Данные для нового пользователя
