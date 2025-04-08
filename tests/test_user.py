@@ -25,17 +25,69 @@ def test_get_existed_user():
     assert response.json() == users[0]
 
 def test_get_unexisted_user():
-    '''Получение несуществующего пользователя'''
-    pass
+     '''Получение несуществующего пользователя'''
+    # Пытаемся получить пользователя с несуществующим email
+    response = client.get(BASE_URL, params={"email": "nonexistent@example.com"})
+
+    # Проверяем что получили 404 ошибку
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    # Проверяем текст ошибки
+    assert response.json() == {"detail": "User not found"}
 
 def test_create_user_with_valid_email():
     '''Создание пользователя с уникальной почтой'''
-    pass
+        # Данные для нового пользователя
+    new_user = {
+        "name": "Test User",
+        "email": "unique@example.com"  # Уникальный email
+    }
+
+    # Создаем пользователя
+    response = client.post(BASE_URL, json=new_user)
+
+    # Проверяем успешное создание (201 код)
+    assert response.status_code == status.HTTP_201_CREATED
+    # Проверяем что вернулся ID (число)
+    assert isinstance(response.json(), int)
 
 def test_create_user_with_invalid_email():
     '''Создание пользователя с почтой, которую использует другой пользователь'''
-    pass
+    # Сначала создаем пользователя
+    existing_user = {
+        "name": "Existing User",
+        "email": "exists@example.com"
+    }
+    client.post(BASE_URL, json=existing_user)
+
+    # Пытаемся создать пользователя с таким же email
+    duplicate_user = {
+        "name": "Duplicate User",
+        "email": "exists@example.com"  # Такой же email
+    }
+    response = client.post(BASE_URL, json=duplicate_user)
+
+    # Проверяем конфликт (409 код)
+    assert response.status_code == status.HTTP_409_CONFLICT
+    # Проверяем текст ошибки
+    assert response.json() == {"detail": "User with this email already exists"}
+
 
 def test_delete_user():
     '''Удаление пользователя'''
-    pass
+     # Сначала создаем пользователя для удаления
+    user_to_delete = {
+        "name": "User To Delete",
+        "email": "delete@example.com"
+    }
+    create_response = client.post(BASE_URL, json=user_to_delete)
+    user_id = create_response.json()
+
+    # Удаляем пользователя
+    delete_response = client.delete(BASE_URL, params={"email": "delete@example.com"})
+
+    # Проверяем успешное удаление (204 код)
+    assert delete_response.status_code == status.HTTP_204_NO_CONTENT
+
+    # Проверяем что пользователь действительно удален
+    get_response = client.get(BASE_URL, params={"email": "delete@example.com"})
+    assert get_response.status_code == status.HTTP_404_NOT_FOUND
