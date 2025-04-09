@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 
-from src.schemas.user import CreateUser, UserInfo
-from src.fake_db import db
+from schemas.user import CreateUser, UserInfo
+from fake_db import db
 
 router = APIRouter()
 

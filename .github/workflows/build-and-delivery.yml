@@ -1,12 +1,15 @@
 name: Docker Build and Push
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Test Python App"]
+    types: [completed]
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == ’success’ }} 
     steps:
       - uses: actions/checkout@v4
       
@@ -22,3 +25,4 @@ jobs:
           context: .
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/my-app:latest
+
