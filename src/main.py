@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from settings import settings  # ✅ Абсолютный импорт (если settings.py в той же папке)
+from .settings import settings  # ✅ Абсолютный импорт (если settings.py в той же папке)
 from .routers import router
 
 app = FastAPI(debug=False)
